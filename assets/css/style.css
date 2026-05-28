@@ -1,0 +1,23 @@
+/* HQ Laptop — extras on top of Tailwind (glass polish, smooth scroll) */
+html {
+  scroll-behavior: smooth;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.glass-nav {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.text-gradient-brand {
+  background: linear-gradient(135deg, #571399 0%, #8b3dd4 50%, #1d283b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

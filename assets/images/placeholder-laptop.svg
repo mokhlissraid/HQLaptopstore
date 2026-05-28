@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500" role="img" aria-label="Laptop placeholder">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#571399;stop-opacity:0.35"/>
+      <stop offset="100%" style="stop-color:#1D283B;stop-opacity:0.5"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="#DFF6FF"/>
+  <rect x="120" y="140" width="560" height="220" rx="12" fill="url(#g)"/>
+  <rect x="100" y="360" width="600" height="24" rx="6" fill="#1D283B" opacity="0.25"/>
+  <text x="400" y="255" text-anchor="middle" fill="#1D283B" font-family="system-ui,sans-serif" font-size="22" opacity="0.6">HQ Laptop</text>
+</svg>

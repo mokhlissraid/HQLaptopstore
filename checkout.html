@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إتمام الطلب — HQ Laptop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { light: '#DFF6FF', purple: '#571399', dark: '#1D283B' }
+          },
+          fontFamily: {
+            sans: ['"IBM Plex Sans Arabic"', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="min-h-screen bg-brand-light text-brand-dark antialiased relative overflow-x-hidden">
+  <div class="pointer-events-none fixed inset-0 -z-10">
+    <div class="absolute -top-32 -right-24 h-96 w-96 rounded-full bg-purple-500/25 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-sky-300/25 blur-3xl"></div>
+  </div>
+
+  <header class="sticky top-0 z-50 border-b border-white/40 glass-nav shadow-sm shadow-brand-purple/5">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+      <a href="index.php" class="flex items-center gap-3 min-w-0">
+        <img src="assets/images/logo.png" alt="" class="h-10 w-auto max-w-[140px] object-contain shrink-0" width="120" height="40" onerror="this.classList.add('hidden')">
+        <span class="text-lg font-bold tracking-tight text-gradient-brand sm:text-xl">HQ Laptop</span>
+      </a>
+      <nav class="flex items-center gap-2 sm:gap-3">
+        <a href="cart.html" class="rounded-full px-3 py-1.5 text-sm font-medium text-brand-dark/80 hover:text-brand-purple transition">السلة</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-14">
+    <h1 class="text-2xl font-bold text-brand-dark sm:text-3xl">إتمام الطلب</h1>
+    <p class="mt-2 text-sm text-brand-dark/60">أدخل بياناتك لإرسال الطلب إلى المتجر (يُحفظ في MySQL).</p>
+
+    <div id="checkout-redirect-note" class="hidden mt-6 glass-panel rounded-2xl border border-amber-200/60 bg-amber-50/80 p-4 text-sm text-amber-900">
+      السلة فارغة. <a href="index.php#products" class="font-semibold text-brand-purple hover:underline">العودة للمتجر</a>
+    </div>
+
+    <div class="mt-8 glass-panel rounded-3xl border border-white/50 p-6 sm:p-8 shadow-xl shadow-brand-purple/10">
+      <h2 class="text-sm font-semibold uppercase tracking-wider text-brand-purple/80">ملخص الطلب</h2>
+      <ul id="checkout-lines" class="mt-4 space-y-3 text-sm border-b border-white/40 pb-6"></ul>
+      <p class="mt-4 flex justify-between text-base font-bold text-brand-dark">
+        <span>الإجمالي</span>
+        <span id="checkout-total" class="text-brand-purple"></span>
+      </p>
+    </div>
+
+    <form id="checkout-form" class="mt-8 glass-panel rounded-3xl border border-white/50 p-6 sm:p-8 space-y-5">
+      <h2 class="text-lg font-bold text-brand-dark">معلومات التوصيل</h2>
+
+      <div>
+        <label for="customer_name" class="block text-sm font-medium text-brand-dark/80 mb-1.5">الاسم الكامل</label>
+        <input type="text" id="customer_name" name="customer_name" required maxlength="120"
+          class="w-full rounded-xl border border-white/60 bg-white/40 px-4 py-3 text-brand-dark placeholder:text-brand-dark/40 backdrop-blur-sm focus:border-brand-purple focus:outline-none focus:ring-2 focus:ring-brand-purple/25 transition"
+          placeholder="مثال: أحمد محمد" autocomplete="name">
+      </div>
+      <div>
+        <label for="phone" class="block text-sm font-medium text-brand-dark/80 mb-1.5">رقم الجوال</label>
+        <input type="tel" id="phone" name="phone" required maxlength="40"
+          class="w-full rounded-xl border border-white/60 bg-white/40 px-4 py-3 text-brand-dark placeholder:text-brand-dark/40 backdrop-blur-sm focus:border-brand-purple focus:outline-none focus:ring-2 focus:ring-brand-purple/25 transition"
+          placeholder="05xxxxxxxx" autocomplete="tel">
+      </div>
+      <div>
+        <label for="address" class="block text-sm font-medium text-brand-dark/80 mb-1.5">العنوان</label>
+        <textarea id="address" name="address" required rows="3" maxlength="500"
+          class="w-full rounded-xl border border-white/60 bg-white/40 px-4 py-3 text-brand-dark placeholder:text-brand-dark/40 backdrop-blur-sm focus:border-brand-purple focus:outline-none focus:ring-2 focus:ring-brand-purple/25 transition resize-y"
+          placeholder="المدينة، الحي، تفاصيل إضافية"></textarea>
+      </div>
+
+      <fieldset class="space-y-3 rounded-2xl border border-white/50 bg-white/25 p-4">
+        <legend class="px-1 text-base font-bold text-brand-dark">طريقة الدفع</legend>
+        <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-white/40 bg-white/20 p-3 hover:bg-white/40">
+          <input type="radio" name="payment_method" value="cod" class="mt-1" checked>
+          <span>
+            <span class="block font-medium text-brand-dark">الدفع عند التسليم</span>
+            <span class="text-xs text-brand-dark/55">تدفع بالدينار (د.ج) عند استلام الجهاز.</span>
+          </span>
+        </label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-white/40 bg-white/20 p-3 hover:bg-white/40">
+          <input type="radio" name="payment_method" value="online" class="mt-1">
+          <span>
+            <span class="block font-medium text-brand-dark">الدفع الإلكتروني</span>
+            <span class="text-xs text-brand-dark/55">محاكاة فقط — لا يُربط ببنك حقيقي في هذا المشروع.</span>
+          </span>
+        </label>
+        <div id="online-pay-block" class="hidden border-r-2 border-brand-purple/40 pr-4 pt-1">
+          <p class="text-xs text-amber-900/90 bg-amber-50/80 border border-amber-200/60 rounded-lg px-3 py-2 mb-4">واجهة تجريبية: أدخل بيانات وهمية. لا تُحفظ في قاعدة البيانات ولا تُرسل لبوابة دفع.</p>
+          <div class="rounded-2xl border border-brand-dark/10 bg-gradient-to-br from-white/90 via-white/70 to-brand-light/80 p-5 shadow-lg shadow-brand-purple/10 space-y-4">
+            <p class="text-xs font-semibold uppercase tracking-wider text-brand-purple/80">بيانات البطاقة</p>
+            <div>
+              <label for="card_number" class="block text-sm font-medium text-brand-dark/80 mb-1.5">رقم البطاقة</label>
+              <input type="text" id="card_number" name="card_number" inputmode="numeric" autocomplete="cc-number" maxlength="23"
+                placeholder="4242 4242 4242 4242"
+                class="w-full rounded-xl border border-white/60 bg-white/80 px-4 py-3 font-mono text-base tracking-widest text-brand-dark placeholder:text-brand-dark/35 focus:border-brand-purple focus:outline-none focus:ring-2 focus:ring-brand-purple/25">
+            </div>
+            <div>
+              <label for="card_holder" class="block text-sm font-medium text-brand-dark/80 mb-1.5">الاسم على البطاقة</label>
+              <input type="text" id="card_holder" name="card_holder" autocomplete="cc-name" maxlength="80"
+                placeholder="كما يظهر على البطاقة"
+                class="w-full rounded-xl border border-white/60 bg-white/80 px-4 py-3 text-brand-dark placeholder:text-brand-dark/35 focus:border-brand-purple focus:outline-none focus:ring-2 focus:ring-brand-purple/25">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="card_expiry" class="block text-sm font-medium text-brand-dark/80 mb-1.5">انتهاء الصلاحية</label>
+                <input type="text" id="card_expiry" name="card_expiry" inputmode="numeric" autocomplete="cc-exp" maxlength="5"
+                  placeholder="MM/YY"
+                  class="w-full rounded-xl border border-white/60 bg-white/80 px-4 py-3 font-mono text-sm text-brand-dark placeholder:text-brand-dark/35 focus:border-brand-purple focus:outline-none focus:ring-2 focus:ring-brand-purple/25">
+              </div>
+              <div>
+                <label for="card_cvc" class="block text-sm font-medium text-brand-dark/80 mb-1.5">CVC</label>
+                <input type="text" id="card_cvc" name="card_cvc" inputmode="numeric" autocomplete="cc-csc" maxlength="4"
+                  placeholder="123"
+                  class="w-full rounded-xl border border-white/60 bg-white/80 px-4 py-3 font-mono text-sm text-brand-dark placeholder:text-brand-dark/35 focus:border-brand-purple focus:outline-none focus:ring-2 focus:ring-brand-purple/25">
+              </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <p id="checkout-error" class="hidden text-sm font-medium text-red-700 bg-red-50/90 border border-red-200/60 rounded-xl px-4 py-3" role="alert"></p>
+
+      <button type="submit" id="checkout-submit"
+        class="w-full rounded-2xl bg-brand-dark py-3.5 text-sm font-semibold text-brand-light shadow-lg hover:bg-brand-purple transition">
+        تأكيد الطلب
+      </button>
+    </form>
+  </main>
+
+  <footer class="border-t border-white/40 glass-nav py-8 mt-8">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 text-center text-sm text-brand-dark/60">
+      <p>© <span id="y"></span> HQ Laptop — مشروع تجريبي.</p>
+    </div>
+  </footer>
+
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+  <script src="assets/js/cart.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var cart = HQCart.getCart();
+      var linesEl = document.getElementById('checkout-lines');
+      var totalEl = document.getElementById('checkout-total');
+      var note = document.getElementById('checkout-redirect-note');
+      var form = document.getElementById('checkout-form');
+
+      if (cart.length === 0) {
+        note.classList.remove('hidden');
+        form.classList.add('opacity-50', 'pointer-events-none');
+        return;
+      }
+
+      linesEl.innerHTML = cart.map(function (line) {
+        var qty = line.qty || 1;
+        var sub = (Number(line.price) || 0) * qty;
+        return (
+          '<li class="flex justify-between gap-4">' +
+          '<span class="text-brand-dark/80">' + HQCart.escapeHtml(line.name) + ' × ' + qty + '</span>' +
+          '<span class="font-semibold text-brand-purple shrink-0">' + HQCart.formatPrice(sub) + '</span>' +
+          '</li>'
+        );
+      }).join('');
+
+      totalEl.textContent = HQCart.formatPrice(HQCart.grandTotal(cart));
+    });
+  </script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
